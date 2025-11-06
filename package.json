@@ -1,0 +1,36 @@
+{
+  "name": "wordpress-on-cloudflare-workers",
+  "version": "1.0.0",
+  "description": "WordPress 运行在 Cloudflare Workers 上",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:prod": "wrangler deploy --env production",
+    "deploy:staging": "wrangler deploy --env staging",
+    "tail": "wrangler tail",
+    "db:create": "wrangler d1 create wordpress-db",
+    "db:init": "wrangler d1 execute wordpress-db --file=./schema.sql",
+    "db:migrations:apply": "wrangler d1 migrations apply wordpress-db",
+    "r2:create": "wrangler r2 bucket create wordpress-media",
+    "kv:create": "wrangler kv:namespace create CACHE",
+    "build": "node build.js"
+  },
+  "keywords": [
+    "wordpress",
+    "cloudflare",
+    "workers",
+    "edge",
+    "serverless"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.78.0",
+    "@cloudflare/workers-types": "^4.20240925.0"
+  },
+  "dependencies": {
+    "itty-router": "^4.0.0"
+  }
+}
+

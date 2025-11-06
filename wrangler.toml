@@ -1,0 +1,71 @@
+# Cloudflare Workers 配置文件
+
+name = "wordpress-on-workers"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+account_id = "" # 填入你的 Cloudflare Account ID
+
+# Workers 站点配置
+workers_dev = true
+
+# 环境变量
+[vars]
+WORDPRESS_DB_NAME = "wordpress"
+WORDPRESS_TABLE_PREFIX = "wp_"
+WORDPRESS_DEBUG = "false"
+
+# D1 数据库绑定
+[[d1_databases]]
+binding = "DB" # 在代码中通过 env.DB 访问
+database_name = "wordpress-db"
+database_id = "" # 填入你创建的 D1 数据库 ID
+
+# R2 存储桶绑定（用于媒体文件）
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "wordpress-media"
+preview_bucket_name = "wordpress-media-preview"
+
+# KV 命名空间绑定（用于缓存）
+[[kv_namespaces]]
+binding = "CACHE"
+id = "" # 填入你的 KV 命名空间 ID
+preview_id = "" # 填入预览环境的 KV 命名空间 ID
+
+# 分析引擎绑定
+[analytics_engine_datasets]
+binding = "ANALYTICS"
+
+# 路由规则
+[build]
+command = "npm run build"
+[build.upload]
+format = "service-worker"
+
+# 兼容性标志
+[compatibility_flags]
+nodejs_compat = true
+
+# 限制配置
+[limits]
+cpu_ms = 50 # CPU 时间限制（毫秒）
+
+# 生产环境配置
+[env.production]
+name = "wordpress-on-workers-prod"
+workers_dev = false
+routes = [
+  { pattern = "yourdomain.com/*", zone_name = "yourdomain.com" }
+]
+
+[env.production.vars]
+WORDPRESS_DEBUG = "false"
+
+# 开发环境配置
+[env.staging]
+name = "wordpress-on-workers-staging"
+workers_dev = true
+
+[env.staging.vars]
+WORDPRESS_DEBUG = "true"
+
